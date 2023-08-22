@@ -15,6 +15,10 @@ const Usuario = sequelize.define('Usuario', {
   estado: {
     type: DataTypes.ENUM('activo', 'inactivo'),
     defaultValue: 'activo'
+  },
+  rol: {
+    type: DataTypes.ENUM('1', '2'),
+    defaultValue: '2'
   }
 });
 

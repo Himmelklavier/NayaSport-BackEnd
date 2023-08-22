@@ -1,71 +1,47 @@
-// controllers/usuariosController.js
+// controllers/authController.js
 const Usuario = require('../models/Usuario');
 
-const usuariosController = {
-  getAllUsuarios: async (req, res) => {
+const authController = {
+  login: async (req, res) => {
+    const { email, password } = req.body;
     try {
-      const usuarios = await Usuario.findAll();
-      res.json(usuarios);
-    } catch (error) {
-      res.status(500).json({ error: 'Error al obtener los usuarios.' });
-    }
-  },
-  getUsuarioById: async (req, res) => {
-    const id = req.params.id;
-    try {
-      const usuario = await Usuario.findByPk(id);
+      const usuario = await Usuario.findOne({ where: { email } });
       if (!usuario) {
         return res.status(404).json({ message: 'Usuario no encontrado.' });
       }
-      res.json(usuario);
+
+      if (usuario.password !== password) {
+        return res.status(401).json({ message: 'Contraseña incorrecta.' });
+      }
+
+      // Genera el token de autenticación y responde con él
+      const token = generateAuthToken(usuario);
+      res.json({ token });
     } catch (error) {
-      res.status(500).json({ error: 'Error al obtener el usuario.' });
+      res.status(500).json({ error: 'Error al iniciar sesión.' });
     }
   },
-  createUsuario: async (req, res) => {
-    const { email, password, estado } = req.body;
+
+  register: async (req, res) => {
+    const { email, password } = req.body;
     try {
       const usuario = await Usuario.create({
         email,
         password,
-        estado
+        estado: 'activo',
+        rol: '2'
       });
       res.status(201).json(usuario);
     } catch (error) {
-      res.status(500).json({ error: 'Error al crear el usuario.' });
-    }
-  },
-  updateUsuario: async (req, res) => {
-    const id = req.params.id;
-    const { email, password, estado } = req.body;
-    try {
-      const usuario = await Usuario.findByPk(id);
-      if (!usuario) {
-        return res.status(404).json({ message: 'Usuario no encontrado.' });
-      }
-      await usuario.update({
-        email,
-        password,
-        estado
-      });
-      res.json(usuario);
-    } catch (error) {
-      res.status(500).json({ error: 'Error al actualizar el usuario.' });
-    }
-  },
-  deleteUsuario: async (req, res) => {
-    const id = req.params.id;
-    try {
-      const usuario = await Usuario.findByPk(id);
-      if (!usuario) {
-        return res.status(404).json({ message: 'Usuario no encontrado.' });
-      }
-      await usuario.destroy();
-      res.json({ message: 'Usuario eliminado correctamente.' });
-    } catch (error) {
-      res.status(500).json({ error: 'Error al eliminar el usuario.' });
+      res.status(500).json({ error: 'Error al registrar el usuario.' });
     }
   }
 };
 
-module.exports = usuariosController;
+module.exports = authController;
+
+function generateAuthToken(usuario) {
+  // Aquí puedes usar una librería como 'jsonwebtoken' para generar un token JWT
+  // y devolverlo para su uso en la autenticación
+  // Ejemplo: return jwt.sign({ id: usuario.id }, 'claveSecreta', { expiresIn: '1h' });
+}
