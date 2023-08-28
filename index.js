@@ -6,7 +6,7 @@ const cors = require('cors');
 app.use(cors());
 const productosRoutes = require('./routes/productosRoutes');
 const usuariosRoutes = require('./routes/authRoutes');
-
+app.use(express.json());
 app.use('/api/productos', productosRoutes);
 app.use('/api/auth', usuariosRoutes);
 

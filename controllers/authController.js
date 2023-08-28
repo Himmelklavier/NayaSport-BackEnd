@@ -1,5 +1,7 @@
 // controllers/authController.js
 const Usuario = require('../models/Usuario');
+const jwt = require('jsonwebtoken');
+
 
 const authController = {
   login: async (req, res) => {
@@ -41,7 +43,6 @@ const authController = {
 module.exports = authController;
 
 function generateAuthToken(usuario) {
-  // Aquí puedes usar una librería como 'jsonwebtoken' para generar un token JWT
-  // y devolverlo para su uso en la autenticación
-  // Ejemplo: return jwt.sign({ id: usuario.id }, 'claveSecreta', { expiresIn: '1h' });
+  const token = jwt.sign({ id: usuario.id }, 'claveSecreta', { expiresIn: '1h' });
+  return token;
 }
