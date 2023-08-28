@@ -1,48 +1,129 @@
-// models/Producto.js
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const mysql = require('mysql2/promise');
 
-const Producto = sequelize.define('Producto', {
-  referencia: {
-    type: DataTypes.STRING,
-    allowNull: true
+// Supongamos que tienes una conexión a la base de datos establecida en dbConnection.js
+const dbConnection = require('../config/database');
+
+const Producto = {
+  defineModel: () => {
+    const model = {
+      referencia: {
+        type: 'STRING',
+        allowNull: true
+      },
+      precio_int: {
+        type: 'DECIMAL(10, 2)',
+        allowNull: true
+      },
+      precio_venta: {
+        type: 'DECIMAL(10, 2)',
+        allowNull: true
+      },
+      imagen: {
+        type: 'STRING',
+        allowNull: true
+      },
+      dimensiones: {
+        type: 'STRING',
+        allowNull: true
+      },
+      nombre: {
+        type: 'STRING',
+        allowNull: true
+      },
+      descripcion: {
+        type: 'TEXT',
+        allowNull: true
+      },
+      estado: {
+        type: 'BOOLEAN',
+        defaultValue: true
+      },
+      marca: {
+        type: 'STRING',
+        allowNull: true
+      },
+      fecha_ingreso: {
+        type: 'DATE',
+        allowNull: true
+      }
+    };
+
+    return model;
   },
-  precio_int: {
-    type: DataTypes.DECIMAL(10, 2),
-    allowNull: true
+
+  findAll: async () => {
+    try {
+      const [rows] = await dbConnection.execute('SELECT * FROM Producto');
+      return rows;
+    } catch (error) {
+      throw error;
+    }
   },
-  precio_venta: {
-    type: DataTypes.DECIMAL(10, 2),
-    allowNull: true
+
+  findByPk: async (id) => {
+    try {
+      const [rows] = await dbConnection.execute('SELECT * FROM Producto WHERE idProducto = ?', [id]);
+      return rows[0];
+    } catch (error) {
+      throw error;
+    }
   },
-  imagen: {
-    type: DataTypes.STRING,
-    allowNull: true
+
+  create: async (productoData) => {
+    try {
+      const [result] = await dbConnection.execute(
+        'INSERT INTO Producto (referencia, precio_int, precio_venta, imagen, dimensiones, nombre, descripcion, estado, marca, fecha_ingreso) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [
+          productoData.referencia,
+          productoData.precio_int,
+          productoData.precio_venta,
+          productoData.imagen,
+          productoData.dimensiones,
+          productoData.nombre,
+          productoData.descripcion,
+          productoData.estado,
+          productoData.marca,
+          productoData.fecha_ingreso
+        ]
+      );
+      return result.insertId;
+    } catch (error) {
+      throw error;
+    }
   },
-  dimensiones: {
-    type: DataTypes.STRING,
-    allowNull: true
+
+  update: async (id, productoData) => {
+    try {
+      const [result] = await dbConnection.execute(
+        'UPDATE Producto SET referencia = ?, precio_int = ?, precio_venta = ?, imagen = ?, dimensiones = ?, nombre = ?, descripcion = ?, estado = ?, marca = ?, fecha_ingreso = ? WHERE idProducto = ?',
+        [
+          productoData.referencia,
+          productoData.precio_int,
+          productoData.precio_venta,
+          productoData.imagen,
+          productoData.dimensiones,
+          productoData.nombre,
+          productoData.descripcion,
+          productoData.estado,
+          productoData.marca,
+          productoData.fecha_ingreso,
+          id
+        ]
+      );
+      return result.affectedRows > 0;
+    } catch (error) {
+      throw error;
+    }
   },
-  nombre: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  descripcion: {
-    type: DataTypes.TEXT,
-    allowNull: true
-  },
-  estado: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: true
-  },
-  marca: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  fecha_ingreso: {
-    type: DataTypes.DATE,
-    allowNull: true
+
+  delete: async (id) => {
+    try {
+      const [result] = await dbConnection.execute('DELETE FROM Producto WHERE idProducto = ?', [id]);
+      return result.affectedRows > 0;
+    } catch (error) {
+      throw error;
+    }
   }
-});
+};
 
 module.exports = Producto;

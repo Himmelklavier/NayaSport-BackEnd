@@ -1,13 +1,16 @@
-// controllers/authController.js
-const Usuario = require('../models/Usuario');
+const mysql = require('mysql2/promise');
 const jwt = require('jsonwebtoken');
 
+// Supongamos que tienes una conexión a la base de datos establecida en dbConnection.js
+const dbConnection = require('../config/database');
+
+const Usuario = require('../models/Usuario'); // Reemplaza la ruta según tu estructura de carpetas
 
 const authController = {
   login: async (req, res) => {
     const { email, password } = req.body;
     try {
-      const usuario = await Usuario.findOne({ where: { email } });
+      const usuario = await Usuario.findByEmail(email);
       if (!usuario) {
         return res.status(404).json({ message: 'Usuario no encontrado.' });
       }
@@ -20,6 +23,7 @@ const authController = {
       const token = generateAuthToken(usuario);
       res.json({ token });
     } catch (error) {
+      console.error('Error al iniciar sesión:', error.message);
       res.status(500).json({ error: 'Error al iniciar sesión.' });
     }
   },
@@ -27,15 +31,19 @@ const authController = {
   register: async (req, res) => {
     const { email, password } = req.body;
     try {
-      const usuario = await Usuario.create({
+      const usuarioData = {
         email,
         password,
         estado: 'activo',
-        rol: '2'
-      });
+        Rol_idRol: '2'
+      };
+
+      const userId = await Usuario.create(usuarioData);
+      const usuario = { id: userId, email, password, estado: 'activo', rol: '2' };
       res.status(201).json(usuario);
     } catch (error) {
-      res.status(500).json({ error: 'Error al registrar el usuario.' });
+      console.error('Error al registrar el usuario:', error.message);
+      res.status(500).json({ error: "Error al registrar el usuario" });
     }
   }
 };
@@ -43,6 +51,10 @@ const authController = {
 module.exports = authController;
 
 function generateAuthToken(usuario) {
-  const token = jwt.sign({ id: usuario.id }, 'claveSecreta', { expiresIn: '1h' });
+  const token = jwt.sign({ id: usuario.idusuario }, 'claveSecreta', { expiresIn: '1h' });
   return token;
 }
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});

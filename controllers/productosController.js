@@ -1,5 +1,9 @@
-// controllers/productosController.js
-const Producto = require('../models/Producto');
+const mysql = require('mysql2/promise');
+
+// Supongamos que tienes una conexión a la base de datos establecida en dbConnection.js
+const dbConnection = require('../config/database');
+
+const Producto = require('../models/Producto'); // Reemplaza la ruta según tu estructura de carpetas
 
 const productosController = {
   getAllProductos: async (req, res) => {
@@ -10,6 +14,7 @@ const productosController = {
       res.status(500).json({ error: 'Error al obtener los productos.' });
     }
   },
+
   getProductoById: async (req, res) => {
     const id = req.params.id;
     try {
@@ -22,81 +27,40 @@ const productosController = {
       res.status(500).json({ error: 'Error al obtener el producto.' });
     }
   },
+
   createProducto: async (req, res) => {
-    const {
-      referencia,
-      precio_int,
-      precio_venta,
-      imagen,
-      dimensiones,
-      nombre,
-      descripcion,
-      estado,
-      marca,
-      fecha_ingreso
-    } = req.body;
+    const productoData = req.body;
     try {
-      const producto = await Producto.create({
-        referencia,
-        precio_int,
-        precio_venta,
-        imagen,
-        dimensiones,
-        nombre,
-        descripcion,
-        estado,
-        marca,
-        fecha_ingreso
-      });
+      const productId = await Producto.create(productoData);
+      const producto = { idProducto: productId, ...productoData };
       res.status(201).json(producto);
     } catch (error) {
       res.status(500).json({ error: 'Error al crear el producto.' });
     }
   },
+
   updateProducto: async (req, res) => {
     const id = req.params.id;
-    const {
-      referencia,
-      precio_int,
-      precio_venta,
-      imagen,
-      dimensiones,
-      nombre,
-      descripcion,
-      estado,
-      marca,
-      fecha_ingreso
-    } = req.body;
+    const productoData = req.body;
     try {
-      const producto = await Producto.findByPk(id);
-      if (!producto) {
+      const updated = await Producto.update(id, productoData);
+      if (!updated) {
         return res.status(404).json({ message: 'Producto no encontrado.' });
       }
-      await producto.update({
-        referencia,
-        precio_int,
-        precio_venta,
-        imagen,
-        dimensiones,
-        nombre,
-        descripcion,
-        estado,
-        marca,
-        fecha_ingreso
-      });
+      const producto = { idProducto: id, ...productoData };
       res.json(producto);
     } catch (error) {
       res.status(500).json({ error: 'Error al actualizar el producto.' });
     }
   },
+
   deleteProducto: async (req, res) => {
     const id = req.params.id;
     try {
-      const producto = await Producto.findByPk(id);
-      if (!producto) {
+      const deleted = await Producto.delete(id);
+      if (!deleted) {
         return res.status(404).json({ message: 'Producto no encontrado.' });
       }
-      await producto.destroy();
       res.json({ message: 'Producto eliminado correctamente.' });
     } catch (error) {
       res.status(500).json({ error: 'Error al eliminar el producto.' });

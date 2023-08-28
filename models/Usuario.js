@@ -1,38 +1,64 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const mysql = require('mysql2/promise');
 
-const Usuario = sequelize.define('usuario', {
-  idusuario: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    primaryKey: true,
-    autoIncrement: true
+// Supongamos que tienes una conexión a la base de datos establecida en dbConnection.js
+const dbConnection = require('../config/database');
+
+const Usuario = {
+  defineModel: () => {
+    const model = {
+      idUsuario: {
+        type: 'INT',
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true
+      },
+      email: {
+        type: 'STRING',
+        allowNull: false,
+        unique: true
+      },
+      password: {
+        type: 'STRING',
+        allowNull: false
+      },
+      estado: {
+        type: 'STRING', // You specified varchar(45), so use STRING here
+        allowNull: true, // Change this to false if it's supposed to be not nullable
+        defaultValue: 'activo'
+      },
+      Rol_idRol: {
+        type: 'INT',
+        allowNull: false,
+        defaultValue: 2, // Default value for Rol_idRol
+       
+      }
+    };
+
+    return model;
   },
-  email: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true
+
+  create: async (usuarioData) => {
+    try {
+      
+      const [result] = await dbConnection.execute(
+        'INSERT INTO usuario (email, password, estado, Rol_idRol) VALUES (?, ?, ?, ?)',
+        [usuarioData.email, usuarioData.password, usuarioData.estado, usuarioData.Rol_idRol]
+      );
+      return result.insertId;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   },
-  password: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  estado: {
-    type: DataTypes.STRING, // You specified varchar(45), so use STRING here
-    allowNull: true // Change this to false if it's supposed to be not nullable
-  },
-  Rol_idRol: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: 'Rol', // Replace 'Rol' with the actual table name of roles
-      key: 'id' // Replace 'id' with the actual primary key of the referenced table
+
+  findByEmail: async (email) => {
+    try {
+      const [rows] = await dbConnection.execute('SELECT * FROM usuario WHERE email = ?', [email]);
+      return rows[0];
+    } catch (error) {
+      throw error;
     }
   }
-}, {
-  timestamps: false
-});
-
-
+};
 
 module.exports = Usuario;
