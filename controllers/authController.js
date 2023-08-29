@@ -1,10 +1,9 @@
 const mysql = require('mysql2/promise');
 const jwt = require('jsonwebtoken');
 
-// Supongamos que tienes una conexión a la base de datos establecida en dbConnection.js
 const dbConnection = require('../config/database');
 
-const Usuario = require('../models/Usuario'); // Reemplaza la ruta según tu estructura de carpetas
+const Usuario = require('../models/Usuario'); 
 
 const authController = {
   login: async (req, res) => {

@@ -45,6 +45,14 @@ const Producto = {
       fecha_ingreso: {
         type: 'DATE',
         allowNull: true
+      },
+      StockTallaje_idStockTallaje: {
+        type: 'INT',
+        allowNull: false,
+      },
+      Categoria_idCategoria: {
+        type: 'INT',
+        allowNull: false,
       }
     };
 
@@ -53,16 +61,17 @@ const Producto = {
 
   findAll: async () => {
     try {
-      const [rows] = await dbConnection.execute('SELECT * FROM Producto');
+      const [rows] = await dbConnection.execute('SELECT * FROM producto');
       return rows;
     } catch (error) {
+      console.error(error);
       throw error;
     }
   },
 
   findByPk: async (id) => {
     try {
-      const [rows] = await dbConnection.execute('SELECT * FROM Producto WHERE idProducto = ?', [id]);
+      const [rows] = await dbConnection.execute('SELECT * FROM producto WHERE idProducto = ?', [id]);
       return rows[0];
     } catch (error) {
       throw error;
@@ -72,30 +81,7 @@ const Producto = {
   create: async (productoData) => {
     try {
       const [result] = await dbConnection.execute(
-        'INSERT INTO Producto (referencia, precio_int, precio_venta, imagen, dimensiones, nombre, descripcion, estado, marca, fecha_ingreso) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        [
-          productoData.referencia,
-          productoData.precio_int,
-          productoData.precio_venta,
-          productoData.imagen,
-          productoData.dimensiones,
-          productoData.nombre,
-          productoData.descripcion,
-          productoData.estado,
-          productoData.marca,
-          productoData.fecha_ingreso
-        ]
-      );
-      return result.insertId;
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  update: async (id, productoData) => {
-    try {
-      const [result] = await dbConnection.execute(
-        'UPDATE Producto SET referencia = ?, precio_int = ?, precio_venta = ?, imagen = ?, dimensiones = ?, nombre = ?, descripcion = ?, estado = ?, marca = ?, fecha_ingreso = ? WHERE idProducto = ?',
+        'INSERT INTO producto (referencia, precio_int, precio_venta, imagen, dimensiones, nombre, descripcion, estado, marca, fecha_ingreso, StockTallaje_idStockTallaje, Categoria_idCategoria) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [
           productoData.referencia,
           productoData.precio_int,
@@ -107,11 +93,40 @@ const Producto = {
           productoData.estado,
           productoData.marca,
           productoData.fecha_ingreso,
+          productoData.StockTallaje_idStockTallaje,
+          productoData.Categoria_idCategoria
+        ]
+      );
+      return result.insertId;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+
+  update: async (id, productoData) => {
+    try {
+      const [result] = await dbConnection.execute(
+        'UPDATE producto SET referencia = ?, precio_int = ?, precio_venta = ?, imagen = ?, dimensiones = ?, nombre = ?, descripcion = ?, estado = ?, marca = ?, fecha_ingreso = ? , StockTallaje_idStockTallaje = ? , Categoria_idCategoria = ? WHERE idProducto = ?',
+        [
+          productoData.referencia,
+          productoData.precio_int,
+          productoData.precio_venta,
+          productoData.imagen,
+          productoData.dimensiones,
+          productoData.nombre,
+          productoData.descripcion,
+          productoData.estado,
+          productoData.marca,
+          productoData.fecha_ingreso,
+          productoData.StockTallaje_idStockTallaje,
+          productoData.Categoria_idCategoria,
           id
         ]
       );
       return result.affectedRows > 0;
     } catch (error) {
+      console.error(error);
       throw error;
     }
   },
@@ -121,6 +136,7 @@ const Producto = {
       const [result] = await dbConnection.execute('DELETE FROM Producto WHERE idProducto = ?', [id]);
       return result.affectedRows > 0;
     } catch (error) {
+      console.error(error);
       throw error;
     }
   }
