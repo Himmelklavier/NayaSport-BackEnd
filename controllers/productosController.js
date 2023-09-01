@@ -4,6 +4,9 @@ const mysql = require('mysql2/promise');
 const dbConnection = require('../config/database');
 
 const Producto = require('../models/Producto'); // Reemplaza la ruta según tu estructura de carpetas
+function isImagePathValid(path) {
+  return path && path.trim() !== '';
+}
 
 const productosController = {
   getAllProductos: async (req, res) => {
@@ -41,6 +44,9 @@ const productosController = {
       descripcion,
       marca,
       Categoria_idCategoria,
+      rutaImg2,
+      rutaImg3,
+      rutaImg4
     } = req.body;
     try {    
   
@@ -58,10 +64,44 @@ const productosController = {
         StockTallaje_idStockTallaje: NULL,
         Categoria_idCategoria,
       };
+      
+  
   
       const productId = await Producto.create(productoData);
       const producto = { idProducto: productId, ...productoData };
-      res.status(201).json(producto);
+      //res.status(201).json(producto);
+      
+      const createdImages = [];
+
+      // Verifica si las rutas de imagen son válidas y las crea
+      if (isImagePathValid(rutaImg2)) {
+        const imagenData2 = {
+          ruta: rutaImg2,
+          Producto_idProducto: productId
+        };
+        const imagenId2 = await Imagen.create(imagenData2);
+        createdImages.push({ idImagen: imagenId2, ...imagenData2 });
+      }
+  
+      if (isImagePathValid(rutaImg3)) {
+        const imagenData3 = {
+          ruta: rutaImg3,
+          Producto_idProducto: productId
+        };
+        const imagenId3 = await Imagen.create(imagenData3);
+        createdImages.push({ idImagen: imagenId3, ...imagenData3 });
+      }
+  
+      if (isImagePathValid(rutaImg4)) {
+        const imagenData4 = {
+          ruta: rutaImg4,
+          Producto_idProducto: productId
+        };
+        const imagenId4 = await Imagen.create(imagenData4);
+        createdImages.push({ idImagen: imagenId4, ...imagenData4 });
+      }
+  
+      res.status(201).json({ producto, imagenes: createdImages });
     } catch (error) {
       res.status(500).json({ error: 'Error al crear el producto.' });
     }
@@ -93,7 +133,8 @@ const productosController = {
     } catch (error) {
       res.status(500).json({ error: 'Error al eliminar el producto.' });
     }
-  }
+  },
+  
 };
 
 module.exports = productosController;
