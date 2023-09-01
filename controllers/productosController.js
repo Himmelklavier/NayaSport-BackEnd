@@ -29,8 +29,36 @@ const productosController = {
   },
 
   createProducto: async (req, res) => {
-    const productoData = req.body;
-    try {
+    const fecha_actual = new Date();
+    
+    const {
+      referencia,
+      precio_int,
+      precio_venta,
+      imagen,
+      dimensiones,
+      nombre,
+      descripcion,
+      marca,
+      Categoria_idCategoria,
+    } = req.body;
+    try {    
+  
+      const productoData = {
+        referencia,
+        precio_int,
+        precio_venta,
+        imagen,
+        dimensiones,
+        nombre,
+        descripcion,
+        estado: true,
+        marca,
+        fecha_ingreso:fecha_actual.toISOString().slice(0, 10),
+        StockTallaje_idStockTallaje: NULL,
+        Categoria_idCategoria,
+      };
+  
       const productId = await Producto.create(productoData);
       const producto = { idProducto: productId, ...productoData };
       res.status(201).json(producto);

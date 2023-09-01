@@ -80,6 +80,7 @@ const Producto = {
 
   create: async (productoData) => {
     try {
+      
       const [result] = await dbConnection.execute(
         'INSERT INTO producto (referencia, precio_int, precio_venta, imagen, dimensiones, nombre, descripcion, estado, marca, fecha_ingreso, StockTallaje_idStockTallaje, Categoria_idCategoria) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [
