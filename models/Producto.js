@@ -71,8 +71,29 @@ const Producto = {
 
   findByPk: async (id) => {
     try {
-      const [rows] = await dbConnection.execute('SELECT * FROM producto WHERE idProducto = ?', [id]);
-      return rows[0];
+      const [rows] = await dbConnection.execute(`
+        SELECT producto.referencia, producto.precio_int, producto.precio_venta, producto.imagen, producto.dimensiones,
+               producto.nombre, producto.descripcion, producto.estado, producto.marca, producto.fecha_ingreso,
+               GROUP_CONCAT(imagen.ruta) AS rutas_imagenes
+        FROM producto
+        LEFT JOIN imagen ON producto.idProducto = imagen.Producto_idProducto
+        WHERE producto.idProducto = ?
+        GROUP BY producto.idProducto;
+      `, [id]);
+  
+      if (rows.length === 0) {
+        return null; // Si no se encuentra el producto, retornar null
+      }
+  
+      const { rutas_imagenes, ...productData } = rows[0];
+  
+      // Crear un objeto con las rutas de imágenes como un array
+      const imagenes = rutas_imagenes ? rutas_imagenes.split(',') : [];
+  
+      // Agregar las rutas de imágenes al objeto de datos del producto
+      productData.imagenes = imagenes;
+  
+      return productData;
     } catch (error) {
       throw error;
     }

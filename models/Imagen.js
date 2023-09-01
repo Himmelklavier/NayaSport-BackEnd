@@ -17,15 +17,7 @@ const Imagen = {
     return model;
   },
 
-  findAll: async () => {
-    try {
-      const [rows] = await dbConnection.execute('SELECT * FROM imagen');
-      return rows;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  },
+  
 
   findByPk: async (id) => {
     try {
@@ -56,8 +48,17 @@ const Imagen = {
       throw error;
     }
   },
+  delete: async (idProducto) => {
+    try {
+        const [rows] = await dbConnection.execute('DELETE FROM imagen WHERE Producto_idProducto = ?', [idProducto]);
+      return rows;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
 
-  // Puedes agregar funciones para actualizar y eliminar imágenes si es necesario
+  
 };
 
 module.exports = Imagen;

@@ -125,6 +125,8 @@ const productosController = {
   deleteProducto: async (req, res) => {
     const id = req.params.id;
     try {
+      //primero borro las imagenes relacionadas a el producto
+      await Imagen.delete(id); 
       const deleted = await Producto.delete(id);
       if (!deleted) {
         return res.status(404).json({ message: 'Producto no encontrado.' });
