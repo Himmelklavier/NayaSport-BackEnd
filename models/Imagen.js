@@ -48,6 +48,22 @@ const Imagen = {
       throw error;
     }
   },
+  updateRutas: async (idProducto, nuevasRutasDeImagenes) => {
+    try {
+      // Primero, elimina las rutas de imágenes existentes para el producto
+      await Imagen.delete(idProducto);
+
+      // Luego, inserta las nuevas rutas de imágenes
+      if (nuevasRutasDeImagenes.length > 0) {
+        for (const ruta of nuevasRutasDeImagenes) {
+          await Imagen.create(ruta, idProducto);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
   delete: async (idProducto) => {
     try {
         const [rows] = await dbConnection.execute('DELETE FROM imagen WHERE Producto_idProducto = ?', [idProducto]);

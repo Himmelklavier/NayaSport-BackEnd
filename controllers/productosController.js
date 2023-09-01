@@ -109,15 +109,65 @@ const productosController = {
 
   updateProducto: async (req, res) => {
     const id = req.params.id;
-    const productoData = req.body;
+    const {
+      referencia,
+      precio_int,
+      precio_venta,
+      imagen,
+      dimensiones,
+      nombre,
+      estado,
+      descripcion,
+      marca,
+      fecha_ingreso,
+      StockTallaje_idStockTallaje,
+      Categoria_idCategoria,
+      rutaImg2,
+      rutaImg3,
+      rutaImg4
+    } = req.body;
     try {
-      const updated = await Producto.update(id, productoData);
-      if (!updated) {
-        return res.status(404).json({ message: 'Producto no encontrado.' });
+      const productoData = {
+        referencia,
+        precio_int,
+        precio_venta,
+        imagen,
+        dimensiones,
+        nombre,
+        descripcion,
+        estado,
+        marca,
+        fecha_ingreso,
+        StockTallaje_idStockTallaje,
+        Categoria_idCategoria,
+      };
+      const updatedProduct = await Producto.update(id, productoData);
+
+    if (!updatedProduct) {
+      return res.status(404).json({ message: 'Producto no encontrado.' });
+    }
+
+    // Verifica si se proporcionaron nuevas rutas de imágenes
+    if (
+      productoData.rutaImg2 ||
+      productoData.rutaImg3 ||
+      productoData.rutaImg4
+    ) {
+      // Construye un array con las rutas de imágenes proporcionadas
+      const nuevasRutasDeImagenes = [
+        productoData.rutaImg2,
+        productoData.rutaImg3,
+        productoData.rutaImg4
+      ].filter(Boolean); // Filtra las rutas que no son nulas o indefinidas
+
+      // Actualiza las rutas de las imágenes en la tabla imagen
+      if (nuevasRutasDeImagenes.length > 0) {
+        await Imagen.update(id, nuevasRutasDeImagenes); // Supongamos que tienes una función "updateRutas" en el modelo de Imagen
       }
-      const producto = { idProducto: id, ...productoData };
-      res.json(producto);
-    } catch (error) {
+    }
+
+    res.json({ message: 'Producto actualizado correctamente.' });
+  } catch (error) {
       res.status(500).json({ error: 'Error al actualizar el producto.' });
     }
   },
