@@ -155,7 +155,7 @@ const Producto = {
 
   delete: async (id) => {
     try {
-      const [result] = await dbConnection.execute('DELETE FROM Producto WHERE idProducto = ?', [id]);
+      const [result] = await dbConnection.execute('DELETE FROM producto WHERE idProducto = ?', [id]);
       return result.affectedRows > 0;
     } catch (error) {
       console.error(error);

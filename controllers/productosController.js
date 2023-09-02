@@ -3,7 +3,8 @@ const mysql = require('mysql2/promise');
 // Supongamos que tienes una conexión a la base de datos establecida en dbConnection.js
 const dbConnection = require('../config/database');
 
-const Producto = require('../models/Producto'); // Reemplaza la ruta según tu estructura de carpetas
+const Producto = require('../models/Producto');
+const Imagen = require('../models/Imagen'); // Reemplaza la ruta según tu estructura de carpetas
 function isImagePathValid(path) {
   return path && path.trim() !== '';
 }
@@ -58,16 +59,25 @@ const productosController = {
         dimensiones,
         nombre,
         descripcion,
-        estado: true,
+        estado: 'TRUE',
         marca,
-        fecha_ingreso:fecha_actual.toISOString().slice(0, 10),
-        StockTallaje_idStockTallaje: NULL,
+        fecha_ingreso:`${fecha_actual.toISOString().slice(0, 10)}`,
+        StockTallaje_idStockTallaje: null,
         Categoria_idCategoria,
       };
       
   
-  
-      const productId = await Producto.create(productoData);
+      let productId;
+      try {
+        productId = await Producto.create(productoData);
+      } catch (duplicateEntryError) {
+        if (duplicateEntryError.code === 'ER_DUP_ENTRY') {
+          // Manejo del error de duplicación de entrada (referencia duplicada)
+          return res.status(400).json({ error: 'El producto ya existe en la base de datos.' });
+        }
+        throw duplicateEntryError; // Re-lanza el error si no es de duplicación de entrada
+      }
+    
       const producto = { idProducto: productId, ...productoData };
       //res.status(201).json(producto);
       
@@ -79,6 +89,7 @@ const productosController = {
           ruta: rutaImg2,
           Producto_idProducto: productId
         };
+        
         const imagenId2 = await Imagen.create(imagenData2);
         createdImages.push({ idImagen: imagenId2, ...imagenData2 });
       }
@@ -103,7 +114,8 @@ const productosController = {
   
       res.status(201).json({ producto, imagenes: createdImages });
     } catch (error) {
-      res.status(500).json({ error: 'Error al crear el producto.' });
+      console.error(error);
+      res.status(500).json({ error: 'Error al crear el producto y las imagenes.' });
     }
   },
 
@@ -177,12 +189,14 @@ const productosController = {
     try {
       //primero borro las imagenes relacionadas a el producto
       await Imagen.delete(id); 
+      //luego borro el producto como tal
       const deleted = await Producto.delete(id);
       if (!deleted) {
         return res.status(404).json({ message: 'Producto no encontrado.' });
       }
       res.json({ message: 'Producto eliminado correctamente.' });
     } catch (error) {
+      console.error(error)
       res.status(500).json({ error: 'Error al eliminar el producto.' });
     }
   },

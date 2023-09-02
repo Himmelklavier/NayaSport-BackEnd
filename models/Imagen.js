@@ -36,11 +36,11 @@ const Imagen = {
     }
   },
 
-  create: async (ruta, Producto_idProducto) => {
+  create: async (imagenData) => {
     try {
       const [result] = await dbConnection.execute(
         'INSERT INTO imagen (ruta, Producto_idProducto) VALUES (?, ?)',
-        [ruta, Producto_idProducto]
+        [imagenData.ruta, imagenData.Producto_idProducto]
       );
       return result.insertId;
     } catch (error) {
@@ -48,7 +48,7 @@ const Imagen = {
       throw error;
     }
   },
-  updateRutas: async (idProducto, nuevasRutasDeImagenes) => {
+  update: async (idProducto, nuevasRutasDeImagenes) => {
     try {
       // Primero, elimina las rutas de imágenes existentes para el producto
       await Imagen.delete(idProducto);
@@ -56,7 +56,11 @@ const Imagen = {
       // Luego, inserta las nuevas rutas de imágenes
       if (nuevasRutasDeImagenes.length > 0) {
         for (const ruta of nuevasRutasDeImagenes) {
-          await Imagen.create(ruta, idProducto);
+          const imagenData = {
+            ruta: ruta,
+            Producto_idProducto: idProducto
+          };
+          await Imagen.create(imagenData);
         }
       }
     } catch (error) {
