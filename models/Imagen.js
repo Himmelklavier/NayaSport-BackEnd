@@ -48,6 +48,17 @@ const Imagen = {
       throw error;
     }
   },
+  updateOne: async (idProducto, nuevaRuta) => {
+    try {
+      // Primero, elimina las rutas de imágenes existentes para el producto
+      await Imagen.delete(idProducto);
+      await Imagen.create(nuevaRuta);
+      
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
   update: async (idProducto, nuevasRutasDeImagenes) => {
     try {
       // Primero, elimina las rutas de imágenes existentes para el producto

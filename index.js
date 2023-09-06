@@ -6,9 +6,11 @@ const cors = require('cors');
 app.use(cors());
 const productosRoutes = require('./routes/productosRoutes');
 const usuariosRoutes = require('./routes/authRoutes');
+const imagenesRoutes = require('./routes/imageRoutes');
 app.use(express.json());
 app.use('/api/productos', productosRoutes);
 app.use('/api/auth', usuariosRoutes);
+app.use('/api/image', imagenesRoutes);
 
 const dbConexion = require('./config/database');
 console.log(dbConexion);
