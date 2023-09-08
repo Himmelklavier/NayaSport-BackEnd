@@ -62,7 +62,25 @@ const Producto = {
   findAll: async () => {
     try {
       const [rows] = await dbConnection.execute('SELECT * FROM producto');
-      return rows;
+    
+    if (rows.length === 0) {
+      return res.status(404).send('No se encontraron productos');
+    }
+
+    // Supongamos que la imagen es la misma para todos los productos y se encuentra en la primera fila.
+    const imagenBLOB = rows[0].imagen;
+
+    // Eliminamos la imagen de la primera fila, ya que la adjuntaremos a cada producto.
+    delete rows[0].imagen;
+
+    // Adjuntamos la misma imagen a cada producto.
+    const productosConImagenes = rows.map((producto) => ({
+      ...producto,
+      imagen: imagenBLOB,
+    }));
+
+    res.json(productosConImagenes); // Devolvemos la lista de productos con imágenes adjuntas.
+
     } catch (error) {
       console.error(error);
       throw error;
