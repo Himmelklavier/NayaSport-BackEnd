@@ -1,4 +1,5 @@
 const mysql = require('mysql2/promise');
+const fs = require('fs');
 
 // Supongamos que tienes una conexión a la base de datos establecida en dbConnection.js
 const dbConnection = require('../config/database');
@@ -19,7 +20,7 @@ const Producto = {
         allowNull: true
       },
       imagen: {
-        type: 'STRING',
+        type: 'BLOB',
         allowNull: true
       },
       dimensiones: {
@@ -66,9 +67,9 @@ const Producto = {
     if (rows.length === 0) {
       return res.status(404).send('No se encontraron productos');
     }
-
-    // Supongamos que la imagen es la misma para todos los productos y se encuentra en la primera fila.
     const imagenBLOB = rows[0].imagen;
+    const imagenPNG=Buffer.from(imagenBLOB).toString('base64');
+
 
     // Eliminamos la imagen de la primera fila, ya que la adjuntaremos a cada producto.
     delete rows[0].imagen;
@@ -76,10 +77,10 @@ const Producto = {
     // Adjuntamos la misma imagen a cada producto.
     const productosConImagenes = rows.map((producto) => ({
       ...producto,
-      imagen: imagenBLOB,
+      imagen: imagenPNG,
     }));
 
-    res.json(productosConImagenes); // Devolvemos la lista de productos con imágenes adjuntas.
+    return productosConImagenes; // Devolvemos la lista de productos con imágenes adjuntas.
 
     } catch (error) {
       console.error(error);
