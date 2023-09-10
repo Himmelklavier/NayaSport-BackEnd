@@ -4,10 +4,13 @@ const mysql = require('mysql2/promise');
 const dbConnection = require('../config/database');
 
 const Producto = require('../models/Producto');
-const Imagen = require('../models/Imagen'); // Reemplaza la ruta según tu estructura de carpetas
+const Imagen = require('../models/Imagen'); 
+const fs = require('fs');
+
 function isImagePathValid(path) {
   return path && path.trim() !== '';
 }
+
 
 const productosController = {
   getAllProductos: async (req, res) => {
@@ -34,12 +37,11 @@ const productosController = {
 
   createProducto: async (req, res) => {
     const fecha_actual = new Date();
-    
+    const data = fs.readFileSync(path.join(__dirname, '../images/' + req.file.filename))
     const {
       referencia,
       precio_int,
       precio_venta,
-      imagen,
       dimensiones,
       nombre,
       descripcion,
@@ -55,7 +57,7 @@ const productosController = {
         referencia,
         precio_int,
         precio_venta,
-        imagen,
+        imagen: data,
         dimensiones,
         nombre,
         descripcion,
