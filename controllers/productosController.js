@@ -5,10 +5,12 @@ const dbConnection = require('../config/database');
 
 const Producto = require('../models/Producto');
 const Imagen = require('../models/Imagen'); 
-const fs = require('fs');
+const multer = require("multer");
+const storage = multer.memoryStorage(); // Almacena la imagen en memoria
+const upload = multer({ storage: storage });
 
-function isImagePathValid(path) {
-  return path && path.trim() !== '';
+function isImagePathValid(pathImage) {
+  return pathImage && pathImage.trim() !== '';
 }
 
 
@@ -37,7 +39,7 @@ const productosController = {
 
   createProducto: async (req, res) => {
     const fecha_actual = new Date();
-    const data = fs.readFileSync(path.join(__dirname, '../images/' + req.file.filename))
+    const imagen = req.file.buffer;
     const {
       referencia,
       precio_int,
@@ -57,7 +59,7 @@ const productosController = {
         referencia,
         precio_int,
         precio_venta,
-        imagen: data,
+        imagen,
         dimensiones,
         nombre,
         descripcion,
