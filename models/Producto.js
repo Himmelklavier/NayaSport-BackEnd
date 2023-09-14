@@ -63,8 +63,8 @@ const Producto = {
   findAll: async () => {
     try {
       producto = await dbConnection.execute('SELECT * FROM producto');
-      return producto; // Devolvemos la lista de productos con imágenes adjuntas.
 
+      return producto; // Devolvemos la lista de productos con imágenes adjuntas.
     } catch (error) {
       console.error(error);
       throw error;

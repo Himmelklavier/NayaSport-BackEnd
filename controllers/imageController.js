@@ -22,6 +22,7 @@ const imageController = {
       const idProducto = req.params.id;
       try {
         const imagenes = await Imagen.findByProductId(idProducto);
+        console.log(imagenes)
         res.json(imagenes);
       } catch (error) {
         res.status(500).json({ error: 'Error al obtener las imágenes del producto.' });

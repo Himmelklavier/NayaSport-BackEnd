@@ -38,14 +38,16 @@ const productosController = {
   },
 
   createProducto: async (req, res) => {
+
+    console.log(req.body)
     const fecha_actual = new Date();
-    //const imagenBuffer = req.file.buffer;
+    const imagen = req.file.buffer;
+
     const {
       referencia,
       precio_int,
       precio_venta,
       dimensiones,
-      imagen,
       nombre,
       descripcion,
       marca,
@@ -60,7 +62,7 @@ const productosController = {
         referencia,
         precio_int,
         precio_venta,
-        imagen,
+        imagen: imagen,
         dimensiones,
         nombre,
         descripcion,
@@ -84,7 +86,7 @@ const productosController = {
       }
     
       const producto = { idProducto: productId, ...productoData };
-      //res.status(201).json(producto);
+      res.status(201).json(producto);
       
       /*const createdImages = [];
 
@@ -120,7 +122,7 @@ const productosController = {
       res.status(201).json({ producto, imagenes: createdImages });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: 'Error al crear el producto y las imagenes.' });
+      res.status(500).json({ error: 'Error al crear el producto y las imagenes.'});
     }
   },
 
@@ -139,9 +141,9 @@ const productosController = {
       fecha_ingreso,
       StockTallaje_idStockTallaje,
       Categoria_idCategoria,
-      rutaImg2,
+      /*rutaImg2,
       rutaImg3,
-      rutaImg4
+      rutaImg4*/
     } = req.body;
     try {
       const productoData = {
