@@ -6,7 +6,7 @@ const dbConnection = require('../config/database');
 const Producto = require('../models/Producto');
 const Imagen = require('../models/Imagen'); 
 const multer = require("multer");
-const storage = multer.memoryStorage(); // Almacena la imagen en memoria
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 function isImagePathValid(pathImage) {
@@ -18,7 +18,7 @@ const productosController = {
   getAllProductos: async (req, res) => {
     try {
       const productos = await Producto.findAll();
-      res.json(productos);
+      res.json(productos[0]);
     } catch (error) {
       res.status(500).json({ error: 'Error al obtener los productos.' });
     }
@@ -39,7 +39,7 @@ const productosController = {
 
   createProducto: async (req, res) => {
     const fecha_actual = new Date();
-    const imagen = req.file.buffer;
+    //const imagenBuffer = req.file.buffer;
     const {
       referencia,
       precio_int,
@@ -49,9 +49,9 @@ const productosController = {
       descripcion,
       marca,
       Categoria_idCategoria,
-      rutaImg2,
+      /*rutaImg2,
       rutaImg3,
-      rutaImg4
+      rutaImg4*/
     } = req.body;
     try {    
   
@@ -59,7 +59,7 @@ const productosController = {
         referencia,
         precio_int,
         precio_venta,
-        imagen,
+        imagen: imagenBuffer,
         dimensiones,
         nombre,
         descripcion,
@@ -85,7 +85,7 @@ const productosController = {
       const producto = { idProducto: productId, ...productoData };
       //res.status(201).json(producto);
       
-      const createdImages = [];
+      /*const createdImages = [];
 
       // Verifica si las rutas de imagen son válidas y las crea
       if (isImagePathValid(rutaImg2)) {
@@ -114,7 +114,7 @@ const productosController = {
         };
         const imagenId4 = await Imagen.create(imagenData4);
         createdImages.push({ idImagen: imagenId4, ...imagenData4 });
-      }
+      }*/
   
       res.status(201).json({ producto, imagenes: createdImages });
     } catch (error) {

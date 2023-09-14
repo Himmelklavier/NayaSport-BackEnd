@@ -5,6 +5,7 @@ const dbConnection = mysql.createPool({
   user: 'u240894095_AdminNaya',
   password: 'Naya!2023',
   database: 'u240894095_NayaSport',
+  connectTimeout: 20000,
 });
 
 
