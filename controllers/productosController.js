@@ -166,7 +166,7 @@ const productosController = {
       return res.status(404).json({ message: 'Producto no encontrado.' });
     }
 
-    // Verifica si se proporcionaron nuevas rutas de imágenes
+    /* Verifica si se proporcionaron nuevas rutas de imágenes
     if (
       productoData.rutaImg2 ||
       productoData.rutaImg3 ||
@@ -183,7 +183,7 @@ const productosController = {
       if (nuevasRutasDeImagenes.length > 0) {
         await Imagen.update(id, nuevasRutasDeImagenes); // Supongamos que tienes una función "updateRutas" en el modelo de Imagen
       }
-    }
+    }*/
 
     res.json({ message: 'Producto actualizado correctamente.' });
   } catch (error) {
