@@ -128,36 +128,37 @@ const productosController = {
 
   updateProducto: async (req, res) => {
     const id = req.params.id;
+    console.log(req.body, id)
+    const fecha_actual = new Date();
+   
+   
     const {
       referencia,
       precio_int,
       precio_venta,
-      imagen,
       dimensiones,
       nombre,
-      estado,
       descripcion,
       marca,
-      fecha_ingreso,
-      StockTallaje_idStockTallaje,
       Categoria_idCategoria,
       /*rutaImg2,
       rutaImg3,
       rutaImg4*/
+      imagen
     } = req.body;
     try {
       const productoData = {
         referencia,
         precio_int,
         precio_venta,
-        imagen,
         dimensiones,
         nombre,
         descripcion,
-        estado,
+        estado:'TRUE',
         marca,
-        fecha_ingreso,
-        StockTallaje_idStockTallaje,
+        imagen,
+        fecha_ingreso: `${fecha_actual.toISOString().slice(0, 10)}`,
+        StockTallaje_idStockTallaje: null,
         Categoria_idCategoria,
       };
       const updatedProduct = await Producto.update(id, productoData);
@@ -166,8 +167,8 @@ const productosController = {
       return res.status(404).json({ message: 'Producto no encontrado.' });
     }
 
-    /* Verifica si se proporcionaron nuevas rutas de imágenes
-    if (
+    // Verifica si se proporcionaron nuevas rutas de imágenes
+    /*if (
       productoData.rutaImg2 ||
       productoData.rutaImg3 ||
       productoData.rutaImg4
