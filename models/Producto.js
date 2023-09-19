@@ -1,7 +1,6 @@
 const mysql = require('mysql2/promise');
 const fs = require('fs');
 
-// Supongamos que tienes una conexión a la base de datos establecida en dbConnection.js
 const dbConnection = require('../config/database');
 
 const Producto = {
