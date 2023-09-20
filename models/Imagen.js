@@ -1,5 +1,5 @@
 const mysql = require('mysql2/promise');
-const dbConnection = require('../config/database'); // Supongo que tienes una conexión a la base de datos establecida en dbConnection.js
+const dbConnection = require('../config/database');
 
 const Imagen = {
   defineModel: () => {

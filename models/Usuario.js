@@ -1,6 +1,5 @@
 const mysql = require('mysql2/promise');
 
-// Supongamos que tienes una conexión a la base de datos establecida en dbConnection.js
 const dbConnection = require('../config/database');
 
 const Usuario = {
@@ -22,14 +21,14 @@ const Usuario = {
         allowNull: false
       },
       estado: {
-        type: 'STRING', // You specified varchar(45), so use STRING here
-        allowNull: true, // Change this to false if it's supposed to be not nullable
+        type: 'STRING', 
+        allowNull: true, 
         defaultValue: 'activo'
       },
       Rol_idRol: {
         type: 'INT',
         allowNull: false,
-        defaultValue: 2, // Default value for Rol_idRol
+        defaultValue: 2, // Default value for Rol_idRol is a client
        
       }
     };
