@@ -28,11 +28,13 @@ app.use((req, res, next) => {
 const productosRoutes = require('./routes/productosRoutes');
 const usuariosRoutes = require('./routes/authRoutes');
 const imagenesRoutes = require('./routes/imageRoutes');
+const cartRoutes = require('./routes/cartRoutes');
 app.use(express.json());
 
 app.use('/api/productos', productosRoutes);
 app.use('/api/auth', usuariosRoutes);
 app.use('/api/image', imagenesRoutes);
+app.use('/api/cart', cartRoutes);
 
 const dbConexion = require('./config/database');
 console.log(dbConexion);

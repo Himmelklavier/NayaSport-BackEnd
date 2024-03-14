@@ -28,7 +28,7 @@ const Usuario = {
       Rol_idRol: {
         type: 'INT',
         allowNull: false,
-        defaultValue: 2, // Default value for Rol_idRol is a client
+        defaultValue: 1, // Default value for Rol_idRol is a client
        
       }
     };
