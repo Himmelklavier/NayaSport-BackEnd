@@ -38,7 +38,7 @@ const productosController = {
 
   createProducto: async (req, res) => {
 
-    console.log(req.body)
+    console.log("body product",req.body)
     const fecha_actual = new Date();
     const imagen = req.file.buffer;
 
