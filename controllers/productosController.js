@@ -11,7 +11,9 @@ const upload = multer({ storage: storage });
 function isImagePathValid(pathImage) {
   return pathImage && pathImage.trim() !== '';
 }
-
+function bufferToBase64(buffer) {
+  return Buffer.from(buffer).toString('base64');
+}
 
 const productosController = {
   getAllProductos: async (req, res) => {
@@ -35,12 +37,12 @@ const productosController = {
       res.status(500).json({ error: 'Error al obtener el producto.' });
     }
   },
+  
 
   createProducto: async (req, res) => {
 
     console.log(req.body)
     const fecha_actual = new Date();
-    const imagen = req.file.buffer;
 
     const {
       referencia,
@@ -53,12 +55,17 @@ const productosController = {
       Categoria_idCategoria,
     } = req.body;
     try {    
+      let imagenBase64 = null;
+      if (req.file && req.file.buffer) {
+        // Si hay un archivo adjunto en la solicitud, conviértelo a base64
+        imagenBase64 = bufferToBase64(req.file.buffer);
+      }
   
       const productoData = {
         referencia,
         precio_int,
         precio_venta,
-        imagen: imagen,
+        imagen: imagenBase64,
         dimensiones,
         nombre,
         descripcion,
