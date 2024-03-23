@@ -19,7 +19,7 @@ const Producto = {
         allowNull: true
       },
       imagen: {
-        type: 'LONGBLOB',
+        type: 'LONGTEXT',
         allowNull: true
       },
       dimensiones: {

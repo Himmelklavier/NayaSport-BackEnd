@@ -60,7 +60,7 @@
 							"type": "text"
 						},
 						{
-							"key": "precio_venta",
+							"key": "precio_int",
 							"value": "2,000",
 							"type": "text"
 						},

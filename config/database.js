@@ -12,7 +12,7 @@ const dbConnection = mysql.createPool({
   host: 'localhost',
   user: 'root',
   password: '',
-  database: 'naya',
+  database: 'naya2',
   connectTimeout: 20000,
 });
 
