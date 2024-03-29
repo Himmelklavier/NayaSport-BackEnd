@@ -238,6 +238,14 @@ CREATE TABLE `venta` (
 --
 -- Indexes for dumped tables
 --
+CREATE TABLE cart (
+  idCart INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  idUsuario INT NOT NULL,
+  idProducto INT NOT NULL,
+  fechaIngreso DATETIME DEFAULT CURRENT_TIMESTAMP,
+  cantidad INT NOT NULL,
+  precio DECIMAL(10,2) NOT NULL);
+  /*precio_item DECIMAL(10,2) NOT NULL);*/
 
 --
 -- Indexes for table `categoria`
@@ -396,6 +404,12 @@ ALTER TABLE `usuario`
 --
 ALTER TABLE `venta`
   ADD CONSTRAINT `fk_Venta_Usuario1` FOREIGN KEY (`Usuario_idusuario`) REFERENCES `usuario` (`idUsuario`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  
+ALTER TABLE cart
+  ADD CONSTRAINT fk_usuario FOREIGN KEY (idUsuario) REFERENCES usuario (idUsuario) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT fk_producto FOREIGN KEY (idProducto) REFERENCES producto (idProducto) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  
+  
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

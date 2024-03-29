@@ -3,21 +3,21 @@ const jwt = require('jsonwebtoken');
 
 const dbConnection = require('../config/database');
 const refreshTokens = {}; // Almacena los tokens de refresco válidos
-const Usuario = require('../models/Usuario'); 
+const Usuario = require('../models/Usuario');
 
 const authController = {
   login: async (req, res) => {
     const { email, password } = req.body;
     try {
       const usuario = await Usuario.findByEmail(email);
-       if (!usuario) {
+      if (!usuario) {
         return res.status(404).json({ message: 'Usuario no encontrado.' });
-       }
+      }
 
       if (usuario.password !== password) {
         return res.status(401).json({ message: 'Contraseña incorrecta.' });
       }
-      const  accessToken  = generateAuthToken(usuario);
+      const accessToken = generateAuthToken(usuario);
       const usuarioRes = { rol: usuario.Rol_idRol, id: usuario.idUsuario, accessToken: accessToken };
       console.log(usuarioRes);
 
@@ -39,8 +39,8 @@ const authController = {
       };
 
       const userId = await Usuario.create(usuarioData);
-      const  accessToken  = generateAuthToken(userId);
-      const usuarioRes = {id: userId, email, password, estado: 'activo', rol: '1' , accessToken: accessToken };
+      const accessToken = generateAuthToken(userId);
+      const usuarioRes = { id: userId, email, password, estado: 'activo', rol: '1', accessToken: accessToken };
       console.log(usuarioRes);
 
       return res.status(201).json(usuarioRes);
@@ -49,9 +49,9 @@ const authController = {
       return res.status(500).json({ error: "Error al registrar el usuario" });
     }
   },
-  
+
   refreshTokens: async (req, res) => {
-   
+
 
     const { refreshToken } = req.body;
 
@@ -68,7 +68,7 @@ const authController = {
       const accessToken = jwt.sign({ id: decoded.id }, 'claveSecreta', { expiresIn: '15m' });
       res.json({ accessToken });
     });
-},
+  },
 
 };
 

@@ -14,7 +14,7 @@ const cartController = {
   },
 
   deleteCarrito: async (req, res) => {
-    const idUsuario = req.params.idUsuario; 
+    const idUsuario = req.params.idUsuario;
 
     try {
       await Cart.deleteCarrito(idUsuario);
@@ -51,7 +51,7 @@ const cartController = {
   },
 
   totalizarCarrito: async (req, res) => {
-    const idUsuario = req.params.idUsuario; 
+    const idUsuario = req.params.idUsuario;
 
     try {
       const total = await Cart.totalizarCarrito(idUsuario);

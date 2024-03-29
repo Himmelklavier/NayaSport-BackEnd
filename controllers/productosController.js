@@ -3,7 +3,7 @@ const mysql = require('mysql2/promise');
 const dbConnection = require('../config/database');
 
 const Producto = require('../models/Producto');
-const Imagen = require('../models/Imagen'); 
+const Imagen = require('../models/Imagen');
 const multer = require("multer");
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -37,11 +37,11 @@ const productosController = {
       res.status(500).json({ error: 'Error al obtener el producto.' });
     }
   },
-  
+
 
   createProducto: async (req, res) => {
 
-    console.log("body product",req.body)
+    console.log("body product", req.body)
     const fecha_actual = new Date();
 
     const {
@@ -54,13 +54,13 @@ const productosController = {
       marca,
       Categoria_idCategoria,
     } = req.body;
-    try {    
+    try {
       let imagenBase64 = null;
       if (req.file && req.file.buffer) {
         // Si hay un archivo adjunto en la solicitud, conviértelo a base64
         imagenBase64 = bufferToBase64(req.file.buffer);
       }
-  
+
       const productoData = {
         referencia,
         precio_int,
@@ -69,14 +69,14 @@ const productosController = {
         dimensiones,
         nombre,
         descripcion,
-        estado: 'TRUE',
+        estado: '0',
         marca,
-        fecha_ingreso:`${fecha_actual.toISOString().slice(0, 10)}`,
+        fecha_ingreso: `${fecha_actual.toISOString().slice(0, 10)}`,
         StockTallaje_idStockTallaje: null,
         Categoria_idCategoria,
       };
-      
-  
+
+
       let productId;
       try {
         productId = await Producto.create(productoData);
@@ -87,13 +87,13 @@ const productosController = {
         }
         throw duplicateEntryError; // Re-lanza el error si no es de duplicación de entrada
       }
-    
+
       const producto = { idProducto: productId, ...productoData };
       res.status(201).json(producto);
-  
+
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: 'Error al crear el producto y las imagenes.'});
+      res.status(500).json({ error: 'Error al crear el producto y las imagenes.' });
     }
   },
 
@@ -101,8 +101,8 @@ const productosController = {
     const id = req.params.id;
     console.log(req.body, id)
     const fecha_actual = new Date();
-   
-   
+
+
     const {
       referencia,
       precio_int,
@@ -122,7 +122,7 @@ const productosController = {
         dimensiones,
         nombre,
         descripcion,
-        estado:'TRUE',
+        estado: 'TRUE',
         marca,
         imagen,
         fecha_ingreso: `${fecha_actual.toISOString().slice(0, 10)}`,
@@ -131,12 +131,12 @@ const productosController = {
       };
       const updatedProduct = await Producto.update(id, productoData);
 
-    if (!updatedProduct) {
-      return res.status(404).json({ message: 'Producto no encontrado.' });
-    }
+      if (!updatedProduct) {
+        return res.status(404).json({ message: 'Producto no encontrado.' });
+      }
 
-    res.json({ message: 'Producto actualizado correctamente.' });
-  } catch (error) {
+      res.json({ message: 'Producto actualizado correctamente.' });
+    } catch (error) {
       res.status(500).json({ error: 'Error al actualizar el producto.' });
     }
   },
@@ -154,7 +154,7 @@ const productosController = {
       res.status(500).json({ error: 'Error al eliminar el producto.' });
     }
   },
-  
+
 };
 
 module.exports = productosController;

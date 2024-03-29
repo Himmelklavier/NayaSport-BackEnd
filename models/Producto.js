@@ -81,19 +81,19 @@ const Producto = {
         WHERE producto.idProducto = ?
         GROUP BY producto.idProducto;
       `, [id]);
-  
+
       if (rows.length === 0) {
         return null; // Si no se encuentra el producto, retornar null
       }
-  
+
       const { rutas_imagenes, ...productData } = rows[0];
-  
+
       // Crear un objeto con las rutas de imágenes como un array
       const imagenes = rutas_imagenes ? rutas_imagenes.split(',') : [];
-  
+
       // Agregar las rutas de imágenes al objeto de datos del producto
       productData.imagenes = imagenes;
-  
+
       return productData;
     } catch (error) {
       throw error;
@@ -102,7 +102,7 @@ const Producto = {
 
   create: async (productoData) => {
     try {
-      
+
       const [result] = await dbConnection.execute(
         'INSERT INTO producto (referencia, precio_int, precio_venta, imagen, dimensiones, nombre, descripcion, estado, marca, fecha_ingreso, StockTallaje_idStockTallaje, Categoria_idCategoria) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [

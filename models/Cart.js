@@ -56,7 +56,6 @@ const Cart = {
       }
 
       const precio = producto[0].precio_venta;
-
       // Verificar si el producto ya está en el carrito del usuario
       const [existingCart] = await dbConnection.execute(
         'SELECT * FROM cart WHERE idProducto = ? AND idUsuario = ?',
@@ -70,6 +69,10 @@ const Cart = {
           [cantidad, idProducto, idUsuario]
         );
       } else {
+        console.log("2. El idProducto del artículo a agregar en el carrito es: " + idProducto);
+        console.log("2. El idUsuario del artículo a agregar en el carrito es: " + idUsuario);
+        console.log("2. La cantidad del artículo a agregar en el carrito es: " + cantidad);
+        console.log("2. El precio del artículo a agregar en el carrito es: " + precio);
         // Si el producto no está en el carrito, agregarlo
         await dbConnection.execute(
           'INSERT INTO cart (idProducto, idUsuario, cantidad, precio) VALUES (?, ?, ?, ?)',
